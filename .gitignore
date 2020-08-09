@@ -1,0 +1,9 @@
+.eggs/
+.idea/
+.pytest_cache/
+__pycache__/
+build/
+dist/
+tartiflette_request_sqlalchemy_session.egg-info/
+venv/
+*.coverage
