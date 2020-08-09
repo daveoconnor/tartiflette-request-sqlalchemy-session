@@ -11,8 +11,11 @@ request which is then injected into the resolver context.
 ## Installation
 
 ```bash
-pip install tartiflette-request-sqlalchemy-session
+pip install tartiflette-request-sqlalchemy-session[psycopg2]
 ```
+
+Currently only supports PostgreSQL through psycopg. Pull requests for other
+adaptors are welcome. 
 
 ## Configuration
 
