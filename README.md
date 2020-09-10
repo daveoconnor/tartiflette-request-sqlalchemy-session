@@ -54,14 +54,13 @@ of a tartiflette aiohttp setup. This should be used as guidance to fit into
 your configuration.
 
 ```python
-from tartiflette_request_context_hooks.middleware.aiohttp import\
-    get_hooks_service_middleware
+from tartiflette_request_context_hooks import RequestContextHooks, middleware
 from tartiflette_request_sa_session import Database,\
     SQLAlchemyRequestContextHooks
 
 def run():
     # As with Alembic add:
-    db_config = Database(
+    db_manager = Database(
         db='db_name',
         engine='db_engine', # e.g. postgres+psycopg2
         host='db_host',
@@ -71,16 +70,13 @@ def run():
     )
 
     # database request-based middleware setup
-    sa_request_context_service = SQLAlchemyRequestContextHooks(
-        db_manager=Database(**db_config)
+    sa_hooks = RequestContextHooks(
+        context_manager=SQLAlchemyRequestContextHooks(db_manager=db_manager),
+        server_middleware=middleware.aiohttp,
     )
-    sa_request_session_middleware = get_hooks_service_middleware(
-        context_service=sa_request_context_service
-    )
-
     # configure app - tweak to fit own configuration
     app = web.Application(middlewares=[
-        sa_request_session_middleware,
+        sa_hooks.middleware,
     ])
     engine = create_engine(
         sdl=os.path.dirname(os.path.abspath(__file__)) + '/sdl',
@@ -90,7 +86,7 @@ def run():
     )
 
     ctx = {
-        'db_session_service': sa_request_context_service,
+        'db_session_service': sa_hooks.service,
     }
     web.run_app(
         register_graphql_handlers(

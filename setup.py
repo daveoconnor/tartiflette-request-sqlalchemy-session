@@ -9,7 +9,7 @@ with open('README.md') as readme:
 
 setuptools.setup(
     name="tartiflette-request-sqlalchemy-session",
-    version="0.9.0",
+    version="0.9.1",
     author="Dave O'Connor",
     author_email="github@dead-pixels.org",
     description="Middleware for the [tartiflette](https://tartiflette.io/) " +
