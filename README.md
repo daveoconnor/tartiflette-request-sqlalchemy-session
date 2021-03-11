@@ -54,46 +54,46 @@ of a tartiflette aiohttp setup. This should be used as guidance to fit into
 your configuration.
 
 ```python
-from tartiflette_request_context_hooks import RequestContextHooks, middleware
-from tartiflette_request_sa_session import Database,\
-    SQLAlchemyRequestContextHooks
+from tartiflette_middleware import Middleware, server
+from tartiflette_request_sa_session import Database, SQLAlchemySessionMiddleware
+
 
 def run():
-    # As with Alembic add:
-    db_manager = Database(
-        db='db_name',
-        engine='db_engine', # e.g. postgres+psycopg2
-        host='db_host',
-        password='db_password',
-        port='db_port',
-        user='db_username',
-    )
+   # As with Alembic add:
+   db_manager = Database(
+      db='db_name',
+      engine='db_engine',  # e.g. postgres+psycopg2
+      host='db_host',
+      password='db_password',
+      port='db_port',
+      user='db_username',
+   )
 
-    # database request-based middleware setup
-    sa_hooks = RequestContextHooks(
-        context_manager=SQLAlchemyRequestContextHooks(db_manager=db_manager),
-        server_middleware=middleware.aiohttp,
-    )
-    # configure app - tweak to fit own configuration
-    app = web.Application(middlewares=[
-        sa_hooks.middleware,
-    ])
-    engine = create_engine(
-        sdl=os.path.dirname(os.path.abspath(__file__)) + '/sdl',
-        modules=[
-            # configure as necessary
-        ],
-    )
+   # database request-based middleware setup
+   sa_middleware = Middleware(
+      context_manager=SQLAlchemySessionMiddleware(db_manager=db_manager),
+      server_middleware=server.aiohttp,
+   )
+   # configure app - tweak to fit own configuration
+   app = web.Application(middlewares=[
+      sa_middleware.middleware,
+   ])
+   engine = create_engine(
+      sdl=os.path.dirname(os.path.abspath(__file__)) + '/sdl',
+      modules=[
+         # configure as necessary
+      ],
+   )
 
-    ctx = {
-        'db_session_service': sa_hooks.service,
-    }
-    web.run_app(
-        register_graphql_handlers(
-            # ... your other settings ...
-            executor_context=ctx,
-        )
-    )
+   ctx = {
+      'db_session_service': sa_middleware.service,
+   }
+   web.run_app(
+      register_graphql_handlers(
+         # ... your other settings ...
+         executor_context=ctx,
+      )
+   )
 ```
 
 ## Use
@@ -111,6 +111,6 @@ async def resolve_new_request(parent, args, ctx, info):
 
 # Notes
 
-1. Currently works using "Tartiflette Request Context Hooks" for middleware
-handling which only supports aiohttp. Other servers supporting tartiflette
-could be supported via pull requests on that project.
+1. Currently works using "Tartiflette Middleware" which only supports aiohttp. 
+   Other servers supporting tartiflette could be supported via pull requests on
+   that project.

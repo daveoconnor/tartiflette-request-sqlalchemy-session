@@ -9,7 +9,7 @@ with open('README.md') as readme:
 
 setuptools.setup(
     name="tartiflette-request-sqlalchemy-session",
-    version="0.9.1",
+    version="1.0.0",
     author="Dave O'Connor",
     author_email="github@dead-pixels.org",
     description="Middleware for the [tartiflette](https://tartiflette.io/) " +
@@ -30,7 +30,7 @@ setuptools.setup(
     include_package_data=True,
     python_requires='>=3.8',
     install_requires=[
-        "tartiflette-request-context-hooks>=0.9",
+        "tartiflette-middleware>=1.0",
         "SQLAlchemy>=1.3",
     ],
     extras_require={

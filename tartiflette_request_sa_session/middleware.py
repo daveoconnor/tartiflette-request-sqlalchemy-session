@@ -1,11 +1,11 @@
-from tartiflette_request_context_hooks import BaseRequestContextHooks
+from tartiflette_middleware import BaseMiddleware
 
 
-class SQLAlchemyRequestContextHooks(BaseRequestContextHooks):
+class SQLAlchemySessionMiddleware(BaseMiddleware):
     label = 'SA'
 
     def __init__(self, *, db_manager):
-        BaseRequestContextHooks.__init__(self)
+        BaseMiddleware.__init__(self)
         self.db_manager = db_manager
 
     async def __aenter__(self):
